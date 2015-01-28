@@ -9,6 +9,7 @@
 #define CODE_H_
 #include <vector>
 using namespace std;
+#include <iostream>
 
 // stores, sets, returns, and checks code values
 /*
@@ -29,13 +30,13 @@ class Code
 		const void printCode(); // print the digits in the code
 		void increment(); // increments the numerical value of the code by one
 		void operator++(); // increments the numerical value of the code by one
-		const int checkCorrect(Code gs); // check how many values are in the correct position
-		const int checkIncorrect(Code gs); // check how many values are in incorrect position
+		int checkCorrect(Code &gs); // check how many values are in the correct position
+		const int checkIncorrect(Code &gs); // check how many values are in incorrect position
 		const short int getBase() {return base;}
-		friend ostream &operator<<(ostream &ostr,const Code &c);
+		friend ostream& operator<<(ostream &ostr,const Code &c);
 		virtual ~Code(); // deconstructor stub
 	protected:
-		std::vector<int> cd; // code vector
+		vector<int> cd; // code vector
 	private:
 		static short int base;
 		
