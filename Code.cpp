@@ -10,6 +10,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <stdio.h>
+#include <cmath>
 using namespace std;
 
 // create a code with random values
@@ -25,18 +26,31 @@ Code::Code(const int arr[])
 }
 
 // create a code with a passed total value
+//tested function by isolating it in another c++ project and it worked
 Code::Code(int val)
 {
-	// iteration variable and digit array
 	int i=0, arr[4];
-	// for each digit . . . 
-	for(i=3,i>=0,i--)
+	// for each digit . . .
+	for(i=3;i>=0;i--)
 	{
 		// find the value for this radix place
 		arr[i] = (val/pow(base,i));
+		//cout << arr[i] << " i =" << i << endl;
 		// subtract value of higher digit
-		val %= (val/pow(base,i));
+		//condition tests if the current value is less or greater then the radix, if the current
+		//value is greater then the radix then subtract from the value the radix times the coefficient,
+		//otherwise it the radix is bigger then the current value it continues to the next loop
+		if(pow(base,i) > val)
+		{
+			continue;
+		}
+		else
+		{
+			val -= (arr[i] * pow(base,i));
+		}
 	}
+	//set the code based on the index given from the argument val.
+	//allows a code to be constructed off its index number
 	setCode(arr);
 }
 
@@ -79,7 +93,7 @@ const void Code::printCode()
 
 // Checks the number of correct guesses which involve the guess having a correct number
 // in the correct position. Assumes that the parameter passed to the function is the guess.
-const int Code::checkCorrect(Code &gs)
+int Code::checkCorrect(Code &gs)
 {
 	// count the number of equal values in corresponding position
 	int temp=0;
@@ -134,10 +148,10 @@ const int Code::checkIncorrect(Code &gs)
 }
 
 // increments the code by one
-Code::increment()
+void Code::increment()
 {
 	// default index counter
-	ii = 0;
+	int ii = 0;
 	// increment code 
 	while(ii<4)
 	{
@@ -148,16 +162,16 @@ Code::increment()
 		{ break; } // exit loop
 	}
 }
+ostream& operator<<(ostream &ostr,const Code &c)
+{
+	return ostr << cd[0] << cd[1] << cd[2] << cd[3];
+}
 
 // increment the code by one
 Code &operator++() {return (*this).increment();}
-
 // deconstrucor stub
 Code::~Code() {}	// TODO Auto-generated destructor stu
 
                                        
-ostream &operator<<(ostream &ostr,const Code &c)
-{
-	return ostr << cd[0] << cd[1] << cd[2] << cd[3];
-}
+
 
