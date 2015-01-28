@@ -11,7 +11,7 @@ using namespace std;
 
 
 // creates a default response
-Response::Response(const numGood, const numBad)
+Response::Response(const int numGood, const int numBad)
 {
 	//sets the numCorrect and numIncorrect to -1 for debugging purposes
 	//if either of them remain the default, then those numbers haven't been touched
@@ -25,8 +25,8 @@ const int Response::getCorrect()
 	return numCorrect;
 }
 
-//get function that resturns the number of Incorrect positions
-const int Response::getIncorrect()
+//get function that returns the number of Incorrect positions
+int Response::getIncorrect()
 {
 	return numIncorrect;
 }
@@ -79,7 +79,7 @@ const bool Response::checkWin(const bool announce)
 }
 
 // Response assignment operation
-Response operator=(const Response g) 
+Response operator=(const Response g)
 { // creates a Response 'r' initialiezed to current object, then returns 'r'
   // uses parenthesis and comma (sequence operator) to execute 2 commands
 	return (numCorrect=g.getCorrect(), numIncorrect=g.getIncorrect(), *this);
