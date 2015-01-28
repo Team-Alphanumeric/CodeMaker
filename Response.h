@@ -12,9 +12,9 @@
 class Response 
 {
 	public:
-		Response(const numGood=-1, const numBad=-1); // create a response object with default invalid values 
+		Response(const int numGood=-1, const int numBad=-1); // create a response object with default invalid values
 		const  int getCorrect(); // return how many values are correct
-		const  int getIncorrect(); // return how many values are incorrect
+		int getIncorrect(); // return how many values are incorrect
 		void setNumCorrect(int const newNumCorrect); // set how many values are correct 
 		void setNumIncorrect(int const newNumIncorrect); // set how many values are incorrect
 		const void printResponse(); // print a response
@@ -23,6 +23,7 @@ class Response
 		ostream &operator<<(); // creates an output stream object
 		const bool operator==(Response r); // determines if two responses have equivalent data
 		const Response operator=(Response r); // assignes the data of the response from the given response
+        friend Response operator=(const Response g);
 		virtual ~Response();
 	private:
 		 int numCorrect; // number of matching values
