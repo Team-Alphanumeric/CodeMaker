@@ -23,10 +23,11 @@ Mastermind::Mastermind()
 // determines if a guess (gc) is consistent with all previous guesses(gs) and responses(rp)
 const bool Mastermind::isConsistent(const Code gc)
 {
+	int i;
 	// accumulator for validity
 	bool temp = true;
 	// check each past value
-	for(i=0,i<gs.size,i++)
+	for(i=0;i<(gs.size);i++)
 	{
 		temp = temp && (rp[i]==getResponse(gc,gs[i]));
 		if(!temp){break;}
@@ -52,6 +53,9 @@ const bool Mastermind::isConsistent(const Code gc, const Code gr, const Response
 Code Mastermind::agentGuess()
 {
 	// for the guess candidate's score
+	Code gc;
+	Code gr;
+	short int gscore;
 	short int score[base];
 	// check all codes as a guess candidate
 	for(int k=0; k<pow(base,4); k++)
@@ -76,7 +80,7 @@ Code Mastermind::agentGuess()
 					// create remaining guess object
 					gr = Code(l);
 					// create an integer to store this remainder guess' score
-					short int gscore=0;
+					gscore=0;
 					// check all responses for validity
 					for(int i=0;i<=4;i++)
 					{
@@ -98,7 +102,7 @@ Code Mastermind::agentGuess()
 	// now that we check all dem codes . . . 
 	// select the consistent code with the lowest score
 	int mindex = 0, minimum = score[0];
-	for(int k=0; k<pow(base,4))
+	for(int k=0;k<pow(base,4); k++)
 	{
 		// accumulate lowest value/index
 		if(score[k] < minimum ) { mindex = k; minimum = score[k]; } 
@@ -141,7 +145,8 @@ void Mastermind::humanSet(Code c)
 Response Mastermind::getResponse(Code sc, Code gs)
 {
 	// set numCorrect and inCorrect for a new response r and return r
-	return (Response r(setNumCorrect(sc.checkCorrect(gs)),setNumIncorrect(sc.checkIncorrect(gs))), r);
+	Response r;
+	return (r.setNumCorrect(sc.checkCorrect(gs)), r.setNumIncorrect(sc.checkIncorrect(gs)), r);
 }
 
 void Mastermind::playGame()
