@@ -164,11 +164,17 @@ void Code::increment()
 }
 ostream& operator<<(ostream &ostr,const Code &c)
 {
-	return ostr << cd[0] << cd[1] << cd[2] << cd[3];
+	return ostr << c.cd[0] << c.cd[1] << c.cd[2] << c.cd[3];
 }
 
 // increment the code by one
-Code &operator++() {return (*this).increment();}
+//!!!!NOTE!!!
+//I don't think this operator should have a return value because it is incrementing so I am going to try this operator by returning void and see if that works
+void Code::operator++(int)
+{
+	//return (*this).increment();
+	(*this).increment();
+}
 // deconstrucor stub
 Code::~Code() {}	// TODO Auto-generated destructor stu
 
