@@ -24,7 +24,8 @@ Mastermind::Mastermind()
 // determines if a guess (gc) is consistent with all previous guesses(gs) and responses(rp)
 const bool Mastermind::isConsistent(const Code gc)
 {
-	//must make i an unsigned int because gs.size() returns a unsigned int and for the for loop to work, both variables must be of the same type
+	// must make i an unsigned int because gs.size() returns a unsigned int and
+	// for the for loop to work, both variables must be of the same type
 	unsigned int i;
 	// accumulator for validity
 	bool temp = true;
@@ -153,33 +154,52 @@ void Mastermind::humanSet(Code &c)
 	int tempArr[4]={0,0,0,0};
 	char charArr[5]={0,0,0,0,0};
 	//this inputs the user for 4 digits which then puts them in to the array
-	cout << "Please type in 4 digits:" << "\n";
-	while(i<4)
+	bool rangeDecline=true;
+	while(rangeDecline)
 	{
-		cin >> charArr[i];
-		// convert to integer until termination character ( a 0)
-		while(charArr[i] != 0)
+		try
 		{
-			tempArr[i] = ((int)charArr[i]) - 48;
-			if(tempArr[i] >= Code::base)
+			cout << "Please type in 4 digits:" << "\n";
+			while(i<4)
 			{
-				throw "Number bigger then the base detected!!";
+				cin >> charArr[i];
+				// convert to integer until termination character ( a 0)
+				while(charArr[i] != 0)
+				{
+					int range=0; // determine which alphanumeric ASCII range the numbers fall into
+					if((charArr[i]>=48)&&(charArr[i]<=57)) {range = 1;} // range for 0-9
+					if((charArr[i]>=65)&&(charArr[i]<=70)) {range = 2;} // range for A-F
+					if((charArr[i]>=97)&&(charArr[i]<=102)) {range = 3;} // range for a-f
+					switch (range)
+					{
+						case 1: tempArr[i] = ((int)charArr[i]) - 48; break; // conversion for 0-9
+						case 2: tempArr[i] = 10 + ((int)charArr[i]) - 65; break; // conversion for A-F
+						case 3: tempArr[i] = 10 + ((int)charArr[i]) - 97; break; // conversion for a-f
+						default: throw rangeError("Input invalid!"); break; // error case
+					}
+					if(tempArr[i] >= Code::base) // for values greater than the radix
+					{ throw rangeError("Input greater than accepted values!"); }
+					
+					else if(tempArr[i] < 0) // for values somehow negative
+					{ throw rangeError("Negative value input!"); }
+					
+					i++; // move to next character
+				}
 			}
-			else if(tempArr[i] < 0)
-			{
-				throw "Number smaller then 0 detected!!";
-			}
-			i++;
+			rangeDecline = 0; // move on if all characters are accepted
 		}
+		catch(rangeError) { cout rangeError.what(); }
 	}
-	//This passes the array of the 4 digits that the user entered into the setCode function of the guess object that will store the human guess as a vector
+	// This passes the array of the 4 digits that the user entered into the 
+	// setCode function of the guess object that will store the human guess as a vector
 	c.setCode(tempArr);
 	return;
 
 }
 
-//this function is passed the secret and the guess and run the check correct, and check incorrect and returns the response which is the number correct and the num incorrect
-//this returns a boolean to main which decides whether the human guessed the write code or has to guess again
+// this function is passed the secret and the guess and run the check correct,
+// and check incorrect and returns the response which is the number correct and the num incorrect
+// this returns a boolean to main which decides whether the human guessed the write code or has to guess again
 Response Mastermind::getResponse(Code sc, Code gs)
 {
 	// set numCorrect and inCorrect for a new response r and return r
