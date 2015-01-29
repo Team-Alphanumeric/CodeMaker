@@ -66,13 +66,13 @@ const bool Response::checkWin(const bool announce)
 	if(numCorrect == 4)
 		{
 			//returns true which indicates the human guessed the code
-			cout << "You have guessed the right code!!!! You won!! now play again.....\n";
+			cout << "The computer has guessed the right code!!!! You lost!! Now play again.....\n";
 			return true;
 		}
 		else 
 		{
 			//returns false which indicates that the human as not guessed the secret code yet
-			cout << "Well you guessed it wrong...try again...\n";
+			cout << "Well the computer guessed it wrong...trying again..." << endl;
 			return false;
 		}
 	}
@@ -92,7 +92,7 @@ const bool Response::operator==(Response r)
 // prints a response
 ostream& operator<<(ostream &ostr,Response r)
 {
-	return ostr << "Correct: " << r.getCorrect() << "\tIncorrect: " << r.getIncorrect() << ".\n";
+	return ostr << "Correct: " << r.getCorrect() << "\tIncorrect: " << r.getIncorrect() << endl;
 }
 
 // deconstructor stub
