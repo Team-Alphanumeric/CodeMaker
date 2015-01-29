@@ -15,7 +15,7 @@ class Mastermind
 {
 public:
 	Mastermind();
-	void humanSet(Code c);
+	void humanSet(Code &c);
 	Response getResponse(Code sc, Code gs);
 	void playGame();
 	void playComp();
@@ -23,7 +23,7 @@ public:
 	Code agentGuess();
 	const bool isConsistent(const Code gc);
 	const bool isConsistent(const Code gc, const Code gr, const Response rc);
-	const short int getBase() {return base;}
+	const short int getBase() {return Code::base;}
 	virtual ~Mastermind();
 protected:
 	Code secret; // secret for the game
@@ -33,6 +33,6 @@ protected:
 	vector <Response> rp; // previous replies
 	vector <bool> cs; // currently consistent values (indexed)
 private:
-	short int base;
+	//short int base;
 };
 #endif /* MASTERMIND_H_ */
