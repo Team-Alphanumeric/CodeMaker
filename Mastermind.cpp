@@ -63,87 +63,95 @@ Code Mastermind::agentGuess()
 	int arraySize = pow(Code::base,4);
 	int score[arraySize];
 	// check all codes as a guess candidate
-	for(int k=0; k<pow(Code::base,4); k++)
+	if(gs.size()==0)
 	{
-		// reset score to 0
-		score[k]=0;
-		// ignore value if already deemed inconsistent
-		if(cs[k])
+		int firstIteration[] = {2,2,4,4};
+		return Code(firstIteration);
+	}
+	else
+	{
+		for(int k=0; k<pow(Code::base,4); k++)
 		{
-			//throw expection if the value of k went over the potential index values for codes
-			if(k > pow(Code::base,4))
-			{throw "Value of k Exceeds index capability";}
-			// generate corresponding guess candidate 
-			try
-			{ gc = Code(k); }
-			catch (invalid_argument &e)
-			{ cout << "Caught " << e.what() << endl; }
-			catch(exception &e) { cout << "Unspecified Exception found: " << e.what() << endl; }
-			// check if guess candidate is consistent
-			if(!isConsistent(gc)) 
-			{ cs[k] = false; /*score[k] = -1;*/ } // mark inconsistent codes in the class
-			else
+			// reset score to 0
+			score[k]=0;
+			// ignore value if already deemed inconsistent
+			if(cs[k])
 			{
-				// check all remainder guesses
-				for(int l=0;l<pow(Code::base,4);l++)
+				//throw expection if the value of k went over the potential index values for codes
+				if(k > pow(Code::base,4))
+				{throw "Value of k Exceeds index capability";}
+				// generate corresponding guess candidate
+				try
+				{ gc = Code(k); }
+				catch (invalid_argument &e)
+				{ cout << "Caught " << e.what() << endl; }
+				catch(exception &e) { cout << "Unspecified Exception found: " << e.what() << endl; }
+				// check if guess candidate is consistent
+				if(!isConsistent(gc))
+				{ cs[k] = false; /*score[k] = -1;*/ } // mark inconsistent codes in the class
+				else
 				{
-					// ignore values already deeemed inconsistent
-					if(!cs[l]) { break; }
-					// create remaining guess object
-					try
-					{ gr = Code(l); }
-					catch (invalid_argument &e)
-					{ cout << "Caught " << e.what() << endl; }
-					catch(exception &e) { cout << "Unspecified Exception found: " << e.what() << endl; }
-					// create an integer to store this remainder guess' score
-					gscore=0;
-					// check all responses for validity
-					for(int i=0;i<=4;i++)
+					// check all remainder guesses
+					for(int l=0;l<pow(Code::base,4);l++)
 					{
-						for(int j=0;j<=4-i;j++)
+						// ignore values already deeemed inconsistent
+						if(!cs[l]) { break; }
+						// create remaining guess object
+						try
+						{ gr = Code(l); }
+						catch (invalid_argument &e)
+						{ cout << "Caught " << e.what() << endl; }
+						catch(exception &e) { cout << "Unspecified Exception found: " << e.what() << endl; }
+						// create an integer to store this remainder guess' score
+						gscore=0;
+						// check all responses for validity
+						for(int i=0;i<=4;i++)
 						{
-							// create response candidate
-							Response rc(i,j);
-							// if current remainder guess is consistent with candidates (response and guess),
-							// increment score for this remainder guess
-							if(isConsistent(gc,gr,rc))
+							for(int j=0;j<=4-i;j++)
 							{
-								gscore++;
+								// create response candidate
+								Response rc(i,j);
+								// if current remainder guess is consistent with candidates (response and guess),
+								// increment score for this remainder guess
+								if(isConsistent(gc,gr,rc))
+								{
+									gscore++;
+								}
 							}
 						}
 					}
+					score[k] += gscore;
 				}
-				score[k] += gscore;
 			}
 		}
-	}
-	// now that we check all dem codes . . . 
-	int mindex = 0;
-	int minimum = score[0];
-	// select the consistent code with the lowest score to
-	//initalize the first possible Code
-	for(int k=0;k<pow(Code::base,4);k++)
-	{
-		if(cs[k] == true && score[k] != 0)
+		// now that we check all dem codes . . .
+		int mindex = 0;
+		int minimum = score[0];
+		// select the consistent code with the lowest score to
+		//initalize the first possible Code
+		for(int k=0;k<pow(Code::base,4);k++)
 		{
-			mindex = k;
-			minimum = score[k];
-			break;
+			if(cs[k] == true && score[k] != 0)
+			{
+				mindex = k;
+				minimum = score[k];
+				break;
+			}
 		}
+		if(score[mindex] == 0)
+		{ throw "The guess candidate score value equals zero"; }
+		else if(score[mindex] < 0)
+		{ throw "The guess candidate score value is less then zero"; }
+		//runs through all the possible scores so that the guess Candidate with the lowest possible
+		//score is found and that score is returned to agent guess as the next guess the computer is going to make
+		for(int k=0;k<pow(Code::base,4); k++)
+		{
+			// accumulate lowest value/index
+			if(score[k] < minimum && cs[k] == true ) { mindex = k; minimum = score[k]; }
+		}
+		// return the lowest scoring code
+		return Code(mindex);
 	}
-	if(score[mindex] == 0)
-	{ throw "The guess candidate score value equals zero"; }
-	else if(score[mindex] < 0)
-	{ throw "The guess candidate score value is less then zero"; }
-	//runs through all the possible scores so that the guess Candidate with the lowest possible
-	//score is found and that score is returned to agent guess as the next guess the computer is going to make
-	for(int k=0;k<pow(Code::base,4); k++)
-	{
-		// accumulate lowest value/index
-		if(score[k] < minimum && cs[k] == true ) { mindex = k; minimum = score[k]; }
-	}
-	// return the lowest scoring code
-	return Code(mindex);
 }
 //This function prompts the user to enter his guess which then stores it as a vector
 
@@ -272,12 +280,6 @@ void Mastermind::playComp()
 	cout << "The secret code is ";cout << secret;
 	//this sets the default first guess to (2,2,4,4) and stores it in the gs vector as element [0]
 	//this is necessary because the agent guess does not have a default case for the first code yet
-	int firstIteration[] = {2,2,4,4};
-	guess.setCode(firstIteration);
-	gs.push_back(guess);
-	//stores the response of the first default guess into the vector rp as element [0]
-	rp.push_back(getResponse(secret, guess));
-	numIterations++;
 	while(!(r1.checkWin(numIterations>0)) && (numIterations < guesses))
 	{
 		//add spacing in console to output the result neater
