@@ -23,11 +23,12 @@ Mastermind::Mastermind()
 // determines if a guess (gc) is consistent with all previous guesses(gs) and responses(rp)
 const bool Mastermind::isConsistent(const Code gc)
 {
-	int i;
+	//must make i an unsigned int because gs.size() returns a unsigned int and for the for loop to work, both variables must be of the same type
+	unsigned int i;
 	// accumulator for validity
 	bool temp = true;
 	// check each past value
-	for(i=0;i<(gs.size);i++)
+	for(i=0;i<(gs.size());i++)
 	{
 		temp = temp && (rp[i]==getResponse(gc,gs[i]));
 		if(!temp){break;}
@@ -38,7 +39,7 @@ const bool Mastermind::isConsistent(const Code gc)
 
 // determines if the remainder guess(gr) is consistent with all previous guesses(gs) as well 
 // as the candidate guess(gc) and candidate reply (rc)
-const bool Mastermind::isConsistent(const Code gc, const Code gr, const Response rc)
+const bool Mastermind::isConsistent(const Code gc, const Code gr, Response rc)
 {
 	// check if remainder guess is consistent with all previous guesses
 	bool temp = isConsistent(gr);
@@ -125,7 +126,8 @@ void Mastermind::humanSet(Code c)
 	cout << "Please type in 4 digits:" << "\n";
 	while(i<4)
 	{
-		scanf("%s",&charArr[i]); // read in each digit as a character
+		cin >> charArr[i];
+		//scanf("%s",&charArr[i]); // read in each digit as a character
 		// convert to integer until termination character ( a 0)
 		while(charArr[i] != 0)
 		{	
@@ -141,7 +143,7 @@ void Mastermind::humanSet(Code c)
 }
 
 //this function is passed the secret and the guess and run the check correct, and check incorrect and returns the response which is the number correct and the num incorrect
-//this returns a bool to main which decides whether the human guessed the write code or has to guess again
+//this returns a boolean to main which decides whether the human guessed the write code or has to guess again
 Response Mastermind::getResponse(Code sc, Code gs)
 {
 	// set numCorrect and inCorrect for a new response r and return r
