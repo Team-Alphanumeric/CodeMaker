@@ -11,6 +11,7 @@
 #include "Response.h"
 #include <vector>
 #include <stdio.h>
+#include <exception>
 
 using namespace std;
 
@@ -67,6 +68,11 @@ Code Mastermind::agentGuess()
 		// ignore value if already deemed inconsistent
 		if(cs[k])
 		{
+			//throw expection if the value of k went over the potential index values for codes
+			if(k > pow(Code::base,4))
+			{
+				throw "Value of k Exceeds index capability";
+			}
 			// generate corresponding guess candidate 
 			gc = Code(k);
 			// check if guess candidate is consistent
@@ -117,6 +123,14 @@ Code Mastermind::agentGuess()
 			break;
 		}
 	}
+	if(score[mindex] == 0)
+	{
+		throw "The guess candidate score value equals zero";
+	}
+	else if(score[mindex] < 0)
+	{
+		throw "The guess candidate score value is less then zero";
+	}
 	//runs through all the possible scores so that the guess Candidate with the lowest possible
 	//score is found and that score is returned to agent guess as the next guess the computer is going to make
 	for(int k=0;k<pow(Code::base,4); k++)
@@ -143,11 +157,18 @@ void Mastermind::humanSet(Code &c)
 	while(i<4)
 	{
 		cin >> charArr[i];
-		//scanf("%s",&charArr[i]); // read in each digit as a character
 		// convert to integer until termination character ( a 0)
 		while(charArr[i] != 0)
 		{
 			tempArr[i] = ((int)charArr[i]) - 48;
+			if(tempArr[i] >= Code::base)
+			{
+				throw "Number bigger then the base detected!!";
+			}
+			else if(tempArr[i] < 0)
+			{
+				throw "Number smaller then 0 detected!!";
+			}
 			i++;
 		}
 	}
@@ -206,10 +227,26 @@ void Mastermind::playComp()
 	//the initalaize size
 	gs.resize(0);
 	rp.resize(0);
+	//variable is meant for the humset exception and it loops until the user enters a code within the correct range
+	bool humanSetTest=true;
 	// number of guesses the computer has entered and can enter
 	int numIterations=0; const int guesses = 10;
 	// user creates a new secret for a new game
-	humanSet(secret);
+	//exception is called on humanSet testing whether or not the values entered by the user for the
+	//secret code is within the appropriate bounds, if it isn't, it calls the exception and loops for the proper numbers to be entered
+	while(humanSetTest)
+	{
+		try
+		{
+			humanSet(secret);
+			humanSetTest=false;
+		}
+		catch(const char* msg)
+		{
+			cout << msg << endl;
+			humanSetTest = true;
+		}
+	}
 	// reset response
 	r1.setNumCorrect(0); r1.setNumIncorrect(0);
 	// print out the secret code to the screen for testing purposes
@@ -226,7 +263,14 @@ void Mastermind::playComp()
 		//add spacing in console to output the result neater
 		cout << endl;
 		// generate a guess
-		guess = agentGuess();
+		try
+		{
+			guess = agentGuess();
+		}
+		catch(const char* msg)
+		{
+			cout << msg << endl;
+		}
 		cout << "Computer Guesses " << guess;
 		// receive and print response
 		r1=getResponse(secret,guess); cout<<r1;
