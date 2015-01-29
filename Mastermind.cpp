@@ -17,8 +17,6 @@ using namespace std;
 //constructor method
 Mastermind::Mastermind()
 {
-	//base = secret.getBase(); // pull the value of the base from the Code object
-	//cout << Code::base; //correctly displays the base
 	cs.assign(pow(Code::base,4),true); // set all values as consistent
 }
 
@@ -27,7 +25,6 @@ const bool Mastermind::isConsistent(const Code gc)
 {
 	//must make i an unsigned int because gs.size() returns a unsigned int and for the for loop to work, both variables must be of the same type
 	unsigned int i;
-	//cout << "make it";
 	// accumulator for validity
 	bool temp = true;
 	// check each past value
@@ -74,7 +71,7 @@ Code Mastermind::agentGuess()
 			gc = Code(k);
 			// check if guess candidate is consistent
 			if(!isConsistent(gc)) 
-			{ cs[k] = false;} // mark inconsistent codes in the class
+			{ cs[k] = false; /*score[k] = -1;*/ } // mark inconsistent codes in the class
 			else
 			{
 				// check all remainder guesses
@@ -109,7 +106,8 @@ Code Mastermind::agentGuess()
 	// now that we check all dem codes . . . 
 	int mindex = 0;
 	int minimum = score[0];
-	// select the consistent code with the lowest score
+	// select the consistent code with the lowest score to
+	//initalize the first possible Code
 	for(int k=0;k<pow(Code::base,4);k++)
 	{
 		if(cs[k] == true && score[k] != 0)
@@ -119,7 +117,8 @@ Code Mastermind::agentGuess()
 			break;
 		}
 	}
-
+	//runs through all the possible scores so that the guess Candidate with the lowest possible
+	//score is found and that score is returned to agent guess as the next guess the computer is going to make
 	for(int k=0;k<pow(Code::base,4); k++)
 	{
 		// accumulate lowest value/index
@@ -204,7 +203,7 @@ void Mastermind::playGame()
 void Mastermind::playComp()
 {
 	//reduces the size of these vectors to zero in case of the case that the user wants to replay the game so it resets the vectors to
-	//the initalize size
+	//the initalaize size
 	gs.resize(0);
 	rp.resize(0);
 	// number of guesses the computer has entered and can enter
@@ -224,9 +223,11 @@ void Mastermind::playComp()
 	rp.push_back(getResponse(secret, guess));
 	while(!(r1.checkWin(numIterations>0)) && (numIterations < guesses))
 	{
+		//add spacing in console to output the result neater
+		cout << endl;
 		// generate a guess
 		guess = agentGuess();
-		cout << guess;
+		cout << "Computer Guesses " << guess;
 		// receive and print response
 		r1=getResponse(secret,guess); cout<<r1;
 
@@ -235,6 +236,7 @@ void Mastermind::playComp()
 		
 		// move to next guess
 		numIterations++;
+
 	}
 	
 	// shame losers for losing
@@ -279,6 +281,45 @@ void Mastermind::playSeries()
 		
 		}
 	}	
+	// return when finished
+	return;
+}
+void Mastermind::playSeriesComp()
+{
+	int playGameAgain=1; // whether or not to continue playing
+
+	while(playGameAgain)
+	{
+		// play a game
+		playComp();
+
+		// prompts user to play again
+		cout << "Do you want to play again? 1 = yes, 2 =no.\n";
+
+		// receive the response for the user
+		cin >> playGameAgain;
+
+		// switch case on the decision of playing again or not
+		switch (playGameAgain)
+		{
+		case 1: // they want to play again
+			// prints out that the happiness that is the user playing again and end case
+			cout << "YAYAY you want to lose again. \nRestarting game, get ready to enter a new secret code!\n";	break;
+
+
+		case 2: // the user wants to stop playing
+			// prints out the sadness that is the game being quit
+			cout << "OK fine you had enough losing to the computer, game quitting.\n";
+			// change response to boolean false and end case
+			playGameAgain =  0; break;
+
+
+		default: // an inappropriate response was given
+			//prompts user that the input was invalid and end case
+			cout << "That is not a correct input, try again.\n"; break;
+
+		}
+	}
 	// return when finished
 	return;
 }
