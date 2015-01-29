@@ -35,13 +35,14 @@ class Code
 		const short int getBase() {return base;}
 		friend ostream& operator<<(ostream &ostr,const Code &c);
 		virtual ~Code(); // deconstructor stub
+		static short int base;
 	protected:
 		vector<int> cd; // code vector
 	private:
-		static short int base;
 		
+
 };
-short int Code::base = 6;
+
 
 #endif /* CODE_H_ */
 
