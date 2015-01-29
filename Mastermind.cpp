@@ -74,7 +74,7 @@ Code Mastermind::agentGuess()
 			gc = Code(k);
 			// check if guess candidate is consistent
 			if(!isConsistent(gc)) 
-			{ cs[k] = false; /*score[k] = -1;*/ } // mark inconsistent codes in the class
+			{ cs[k] = false;} // mark inconsistent codes in the class
 			else
 			{
 				// check all remainder guesses
@@ -116,8 +116,6 @@ Code Mastermind::agentGuess()
 		{
 			mindex = k;
 			minimum = score[k];
-			//cout << "The score of k is " << score[k] << endl;
-			//cout << "The value of k is" << k << endl;
 			break;
 		}
 	}
@@ -145,14 +143,14 @@ void Mastermind::humanSet(Code &c)
 	cout << "Please type in 4 digits:" << "\n";
 	while(i<4)
 	{
-	cin >> charArr[i];
-	//scanf("%s",&charArr[i]); // read in each digit as a character
-	// convert to integer until termination character ( a 0)
-	while(charArr[i] != 0)
-	{
-	tempArr[i] = ((int)charArr[i]) - 48;
-	i++;
-	}
+		cin >> charArr[i];
+		//scanf("%s",&charArr[i]); // read in each digit as a character
+		// convert to integer until termination character ( a 0)
+		while(charArr[i] != 0)
+		{
+			tempArr[i] = ((int)charArr[i]) - 48;
+			i++;
+		}
 	}
 	//This passes the array of the 4 digits that the user entered into the setCode function of the guess object that will store the human guess as a vector
 	c.setCode(tempArr);
