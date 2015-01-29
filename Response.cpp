@@ -8,6 +8,7 @@
 #include "Response.h"
 #include <iostream>
 using namespace std;
+#include <stdexcept>
 
 
 // creates a default response
@@ -15,6 +16,8 @@ Response::Response(const int numGood, const int numBad)
 {
 	//sets the numCorrect and numIncorrect to -1 for debugging purposes
 	//if either of them remain the default, then those numbers haven't been touched
+	if(numGood > 4 || numBad > 4)
+	{ throw invalid_argument("numBad or numGood > 4 instead of between 0-4"); }
 	numCorrect = numGood;
 	numIncorrect = numBad;
 }
@@ -34,12 +37,17 @@ const int Response::getIncorrect()
 //set function to manually set the value of numCorrect
 void Response::setNumCorrect(int const newNumCorrect)
 {
+	if(newNumCorrect > 4)
+	{ throw invalid_argument("newNumCorrect > 4 instead of between 0-4"); }
 	numCorrect = newNumCorrect; return;
 }
 
 //set function to manually set the value of incorrect
 void Response::setNumIncorrect(int const newNumIncorrect)
 {
+
+	if(newNumIncorrect > 4)
+	{ throw invalid_argument("newNumIncorrect > 4 instead of between 0-4"); }
 	numIncorrect = newNumIncorrect; return;
 }
 
@@ -63,7 +71,7 @@ const bool Response::checkWin(const bool announce)
 	if(!announce) { return numCorrect==4;	}
 	else
 	{
-	if(numCorrect == 4)
+		if(numCorrect == 4)
 		{
 			//returns true which indicates the human guessed the code
 			cout << "The computer has guessed the right code!!!! You lost!! Now play again.....\n";
