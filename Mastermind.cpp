@@ -10,14 +10,16 @@
 #include "Code.h"
 #include "Response.h"
 #include <vector>
+#include <stdio.h>
 
 using namespace std;
 
 //constructor method
 Mastermind::Mastermind()
 {
-	base = secret.getBase(); // pull the value of the base from the Code object
-	cs.assign(pow(base,4),true); // set all values as consistent
+	//base = secret.getBase(); // pull the value of the base from the Code object
+	//cout << Code::base; //correctly displays the base
+	cs.assign(pow(Code::base,4),true); // set all values as consistent
 }
 
 // determines if a guess (gc) is consistent with all previous guesses(gs) and responses(rp)
@@ -25,6 +27,7 @@ const bool Mastermind::isConsistent(const Code gc)
 {
 	//must make i an unsigned int because gs.size() returns a unsigned int and for the for loop to work, both variables must be of the same type
 	unsigned int i;
+	//cout << "make it";
 	// accumulator for validity
 	bool temp = true;
 	// check each past value
@@ -57,24 +60,25 @@ Code Mastermind::agentGuess()
 	Code gc;
 	Code gr;
 	short int gscore;
-	short int score[base];
+	int arraySize = pow(Code::base,4);
+	int score[arraySize];
 	// check all codes as a guess candidate
-	for(int k=0; k<pow(base,4); k++)
+	for(int k=0; k<pow(Code::base,4); k++)
 	{
 		// reset score to 0
 		score[k]=0;
 		// ignore value if already deemed inconsistent
-		if(!cs[k])
+		if(cs[k])
 		{
 			// generate corresponding guess candidate 
 			gc = Code(k);
 			// check if guess candidate is consistent
 			if(!isConsistent(gc)) 
-			{ cs[k] = false; score[k] = -1; } // mark inconsistent codes in the class
+			{ cs[k] = false; /*score[k] = -1;*/ } // mark inconsistent codes in the class
 			else
 			{
 				// check all remainder guesses
-				for(int l=0;l<pow(base,4);l++)
+				for(int l=0;l<pow(Code::base,4);l++)
 				{
 					// ignore values already deeemed inconsistent
 					if(!cs[l]) { break; }
@@ -91,55 +95,69 @@ Code Mastermind::agentGuess()
 							Response rc(i,j);
 							// if current remainder guess is consistent with candidates (response and guess),
 							// increment score for this remainder guess
-							if(isConsistent(gc,gr,rc)) {gscore++;}
+							if(isConsistent(gc,gr,rc))
+							{
+								gscore++;
+							}
 						}
 					}
 				}
-				// add score from the remainder guess
 				score[k] += gscore;
 			}
 		}
 	}
 	// now that we check all dem codes . . . 
+	int mindex = 0;
+	int minimum = score[0];
 	// select the consistent code with the lowest score
-	int mindex = 0, minimum = score[0];
-	for(int k=0;k<pow(base,4); k++)
+	for(int k=0;k<pow(Code::base,4);k++)
+	{
+		if(cs[k] == true && score[k] != 0)
+		{
+			mindex = k;
+			minimum = score[k];
+			//cout << "The score of k is " << score[k] << endl;
+			//cout << "The value of k is" << k << endl;
+			break;
+		}
+	}
+
+	for(int k=0;k<pow(Code::base,4); k++)
 	{
 		// accumulate lowest value/index
-		if(score[k] < minimum ) { mindex = k; minimum = score[k]; } 
+		if(score[k] < minimum && cs[k] == true ) { mindex = k; minimum = score[k]; }
 	}
 	// return the lowest scoring code
 	return Code(mindex);
 }
 //This function prompts the user to enter his guess which then stores it as a vector
-void Mastermind::humanSet(Code c)
+
+void Mastermind::humanSet(Code &c)
 {
+
 	//create variable i to be used for the for loop
 	int i=0;
-	
-	//create a temporary array that will be inputed into the .setCode function 
+	//create a temporary array that will be inputed into the .setCode function
 	// from the Code class to convert the arrary into a vector
 	int tempArr[4]={0,0,0,0};
 	char charArr[5]={0,0,0,0,0};
-		
 	//this inputs the user for 4 digits which then puts them in to the array
 	cout << "Please type in 4 digits:" << "\n";
 	while(i<4)
 	{
-		cin >> charArr[i];
-		//scanf("%s",&charArr[i]); // read in each digit as a character
-		// convert to integer until termination character ( a 0)
-		while(charArr[i] != 0)
-		{	
-			tempArr[i] = ((int)charArr[i]) - 48;	
-			i++;
-		}
-		
+	cin >> charArr[i];
+	//scanf("%s",&charArr[i]); // read in each digit as a character
+	// convert to integer until termination character ( a 0)
+	while(charArr[i] != 0)
+	{
+	tempArr[i] = ((int)charArr[i]) - 48;
+	i++;
+	}
 	}
 	//This passes the array of the 4 digits that the user entered into the setCode function of the guess object that will store the human guess as a vector
 	c.setCode(tempArr);
-	
 	return;
+
 }
 
 //this function is passed the secret and the guess and run the check correct, and check incorrect and returns the response which is the number correct and the num incorrect
@@ -164,7 +182,8 @@ void Mastermind::playGame()
 		
 	// print out the secret code to the screen for testing purposes
 	cout << "The secret code is "; secret.printCode();
-	
+	//for first iteration, setting a default start value
+
 	while(!(r1.checkWin(numIterations>0)) && (numIterations < guesses))
 	{
 		// prompt user for a guess
@@ -186,23 +205,30 @@ void Mastermind::playGame()
 
 void Mastermind::playComp()
 {
+	//reduces the size of these vectors to zero in case of the case that the user wants to replay the game so it resets the vectors to
+	//the initalize size
+	gs.resize(0);
+	rp.resize(0);
 	// number of guesses the computer has entered and can enter
-	int numIterations=0; const  int guesses = 10;
-
+	int numIterations=0; const int guesses = 10;
 	// user creates a new secret for a new game
 	humanSet(secret);
-	
 	// reset response
 	r1.setNumCorrect(0); r1.setNumIncorrect(0);
-		
 	// print out the secret code to the screen for testing purposes
-	cout << "The secret code is "; secret.printCode();
-	
+	cout << "The secret code is ";cout << secret;
+	//this sets the default first guess to (2,2,4,4) and stores it in the gs vector as element [0]
+	//this is necessary because the agent guess does not have a default case for the first code yet
+	int firstIteration[] = {2,2,4,4};
+	guess.setCode(firstIteration);
+	gs.push_back(guess);
+	//stores the response of the first default guess into the vector rp as element [0]
+	rp.push_back(getResponse(secret, guess));
 	while(!(r1.checkWin(numIterations>0)) && (numIterations < guesses))
 	{
 		// generate a guess
 		guess = agentGuess();
-
+		cout << guess;
 		// receive and print response
 		r1=getResponse(secret,guess); cout<<r1;
 
@@ -243,7 +269,7 @@ void Mastermind::playSeries()
 			
 
 		case 2: // the user wants to stop playing
-			// prints out the saddiness that is the game being quit
+			// prints out the sadness that is the game being quit
 			cout << "OK fine you had enough, game quitting.\n";
 			// change response to boolean false and end case
 			playGameAgain =  0; break;
