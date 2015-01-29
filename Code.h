@@ -29,7 +29,7 @@ class Code
 		const int getVal(const int index); // get the indexed values in a code
 		const void printCode(); // print the digits in the code
 		void increment(); // increments the numerical value of the code by one
-		void operator++(); // increments the numerical value of the code by one
+		void operator++(int); // increments the numerical value of the code by one
 		int checkCorrect(Code &gs); // check how many values are in the correct position
 		const int checkIncorrect(Code &gs); // check how many values are in incorrect position
 		const short int getBase() {return base;}
