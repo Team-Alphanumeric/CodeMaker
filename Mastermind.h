@@ -29,7 +29,7 @@ public:
 protected:
 	Code secret; // secret for the game
 	Code guess; // current guess
-	Response r1; // current respone
+	Response r1; // current response
 	vector <Code> gs; // previous guesses
 	vector <Response> rp; // previous replies
 	vector <bool> cs; // currently consistent values (indexed)
