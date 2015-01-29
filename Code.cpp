@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <stdio.h>
 #include <cmath>
+#include <stdexcept>
 using namespace std;
 
 // create a code with random values
@@ -29,6 +30,8 @@ Code::Code(const int arr[])
 //tested function by isolating it in another c++ project and it worked
 Code::Code(int val)
 {
+	if(val < 0)
+	{ throw invalid_argument("Index value is negative"); }
 	int i=0, arr[4];
 	// for each digit . . .
 	for(i=3;i>=0;i--)
@@ -57,7 +60,10 @@ Code::Code(int val)
 // set the code values to the array values
 void Code::setCode(const int arr[])
 {
-	cd.resize(4);
+	try
+	{ cd.resize(4); }
+	catch(const out_of_range& oor)
+	{ cout << "Out of Range error: " << oor.what() << endl; }
 	for(int ii=0;ii<4;ii++)
 	{
 		cd[ii] = arr[ii];
@@ -67,10 +73,13 @@ void Code::setCode(const int arr[])
 // set random values for the code
 void Code::setRandomCode()
 {
-	cd.resize(4);
+	try
+	{ cd.resize(4); }
+	catch(const out_of_range& oor)
+	{ cout << "Out of Range error: " << oor.what() << endl;	}
 	for(int ii=0;ii<4;ii++)
 	{
-		 cd[ii] = (int) rand() % 6;
+		 cd[ii] = (int) rand() % base;
 	}
 }
 
@@ -114,7 +123,7 @@ int Code::checkCorrect(Code &gs)
 // the code. Assumes that the parameter passed to the function is the guess.
 const int Code::checkIncorrect(Code &gs)
 {
-	// create image of guess corresopnding to code vectors
+	// create image of guess corresponding to code vectors
 	 int image[4] = {0,0,0,0};
 
 	// iteratively check values from the secret
@@ -170,8 +179,6 @@ ostream& operator<<(ostream &ostr,const Code &c)
 }
 
 // increment the code by one
-//!!!!NOTE!!!
-//I don't think this operator should have a return value because it is incrementing so I am going to try this operator by returning void and see if that works
 void Code::operator++(int)
 {
 	//return (*this).increment();
