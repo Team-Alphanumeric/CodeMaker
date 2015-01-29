@@ -26,7 +26,7 @@ const int Response::getCorrect()
 }
 
 //get function that returns the number of Incorrect positions
-int Response::getIncorrect()
+const int Response::getIncorrect()
 {
 	return numIncorrect;
 }
@@ -79,20 +79,20 @@ const bool Response::checkWin(const bool announce)
 }
 
 // Response assignment operation
-Response operator=(const Response g)
-{ // creates a Response 'r' initialiezed to current object, then returns 'r'
+Response Response::operator=(Response g)
+{ // creates a Response 'r' initialized to current object, then returns 'r'
   // uses parenthesis and comma (sequence operator) to execute 2 commands
-	return (numCorrect=g.getCorrect(), numIncorrect=g.getIncorrect(), *this);
+	return (numCorrect= g.getCorrect(), numIncorrect=g.getIncorrect(), *this);
 }
 
 // Comparison operator
-bool operator==(Response r)
-{	return checkSame(r); }
+const bool Response::operator==(Response r)
+{	return (*this).checkSame(r); }
 
 // prints a response
-ostream &operator<<(ostream &ostr,const Response r)
+ostream& operator<<(ostream &ostr,Response r)
 {
-	return ostr << "Correct: " << r.getCorrect() << "\tIncorrect: " << r.getIncorrect();
+	return ostr << "Correct: " << r.getCorrect() << "\tIncorrect: " << r.getIncorrect() << ".\n";
 }
 
 // deconstructor stub
