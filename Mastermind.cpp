@@ -12,6 +12,7 @@
 #include <vector>
 #include <stdio.h>
 #include <exception>
+#include <stdexcept>
 
 using namespace std;
 
@@ -71,11 +72,12 @@ Code Mastermind::agentGuess()
 		{
 			//throw expection if the value of k went over the potential index values for codes
 			if(k > pow(Code::base,4))
-			{
-				throw "Value of k Exceeds index capability";
-			}
+			{throw "Value of k Exceeds index capability";}
 			// generate corresponding guess candidate 
-			gc = Code(k);
+			try
+			{ gc = Code(k); }
+			catch (exception &e)
+			{ cout << "Caught " << e.what() << endl; }
 			// check if guess candidate is consistent
 			if(!isConsistent(gc)) 
 			{ cs[k] = false; /*score[k] = -1;*/ } // mark inconsistent codes in the class
@@ -87,7 +89,10 @@ Code Mastermind::agentGuess()
 					// ignore values already deeemed inconsistent
 					if(!cs[l]) { break; }
 					// create remaining guess object
-					gr = Code(l);
+					try
+					{ gr = Code(l); }
+					catch (exception &e)
+					{ cout << "Caught " << e.what() << endl; }
 					// create an integer to store this remainder guess' score
 					gscore=0;
 					// check all responses for validity
@@ -125,13 +130,9 @@ Code Mastermind::agentGuess()
 		}
 	}
 	if(score[mindex] == 0)
-	{
-		throw "The guess candidate score value equals zero";
-	}
+	{ throw "The guess candidate score value equals zero"; }
 	else if(score[mindex] < 0)
-	{
-		throw "The guess candidate score value is less then zero";
-	}
+	{ throw "The guess candidate score value is less then zero"; }
 	//runs through all the possible scores so that the guess Candidate with the lowest possible
 	//score is found and that score is returned to agent guess as the next guess the computer is going to make
 	for(int k=0;k<pow(Code::base,4); k++)
@@ -157,8 +158,7 @@ void Mastermind::humanSet(Code &c)
 	bool rangeDecline=true;
 	while(rangeDecline)
 	{
-		try
-		{
+
 			cout << "Please type in 4 digits:" << "\n";
 			while(i<4)
 			{
@@ -175,22 +175,20 @@ void Mastermind::humanSet(Code &c)
 						case 1: tempArr[i] = ((int)charArr[i]) - 48; break; // conversion for 0-9
 						case 2: tempArr[i] = 10 + ((int)charArr[i]) - 65; break; // conversion for A-F
 						case 3: tempArr[i] = 10 + ((int)charArr[i]) - 97; break; // conversion for a-f
-						default: throw rangeError("Input invalid!"); break; // error case
+						default: throw range_error("Input invalid!"); break; // error case
 					}
 					if(tempArr[i] >= Code::base) // for values greater than the radix
-					{ throw rangeError("Input greater than accepted values!"); }
-					
+					{ throw range_error("Input greater than accepted values!"); }
+
 					else if(tempArr[i] < 0) // for values somehow negative
-					{ throw rangeError("Negative value input!"); }
-					
+					{ throw range_error("Negative value input!"); }
+
 					i++; // move to next character
 				}
 			}
 			rangeDecline = 0; // move on if all characters are accepted
-		}
-		catch(rangeError) { cout rangeError.what(); }
 	}
-	// This passes the array of the 4 digits that the user entered into the 
+	// This passes the array of the 4 digits that the user entered into the
 	// setCode function of the guess object that will store the human guess as a vector
 	c.setCode(tempArr);
 	return;
@@ -268,7 +266,10 @@ void Mastermind::playComp()
 		}
 	}
 	// reset response
-	r1.setNumCorrect(0); r1.setNumIncorrect(0);
+	try
+	{ r1.setNumCorrect(0); r1.setNumIncorrect(0); }
+	catch (exception &e)
+	{ cout << "Caught " << e.what() << endl; }
 	// print out the secret code to the screen for testing purposes
 	cout << "The secret code is ";cout << secret;
 	//this sets the default first guess to (2,2,4,4) and stores it in the gs vector as element [0]
