@@ -88,7 +88,9 @@ const void Code::printCode()
 	{
 		cout << cd[ii];
 	}
-	cout << "\n";
+
+	cout << endl;
+
 }
 
 // Checks the number of correct guesses which involve the guess having a correct number
@@ -164,7 +166,7 @@ void Code::increment()
 }
 ostream& operator<<(ostream &ostr,const Code &c)
 {
-	return ostr << c.cd[0] << c.cd[1] << c.cd[2] << c.cd[3];
+	return ostr << c.cd[0] << c.cd[1] << c.cd[2] << c.cd[3] << endl;
 }
 
 // increment the code by one
