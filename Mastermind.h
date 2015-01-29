@@ -24,6 +24,7 @@ public:
 	const bool isConsistent(const Code gc);
 	const bool isConsistent(const Code gc, const Code gr, const Response rc);
 	const short int getBase() {return Code::base;}
+	void playSeriesComp();
 	virtual ~Mastermind();
 protected:
 	Code secret; // secret for the game
