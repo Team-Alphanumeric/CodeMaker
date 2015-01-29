@@ -13,17 +13,17 @@ class Response
 {
 	public:
 		Response(const int numGood=-1, const int numBad=-1); // create a response object with default invalid values
-		const  int getCorrect(); // return how many values are correct
-		int getIncorrect(); // return how many values are incorrect
+		const int getCorrect(); // return how many values are correct
+		const int getIncorrect(); // return how many values are incorrect
 		void setNumCorrect(int const newNumCorrect); // set how many values are correct 
 		void setNumIncorrect(int const newNumIncorrect); // set how many values are incorrect
 		const void printResponse(); // print a response
 		const bool checkWin(const bool announce=false); // check if this is a winning response
 		const bool checkSame(const Response r); // check if a given response matches this one
-		ostream &operator<<(); // creates an output stream object
+		friend ostream& operator<<(ostream &ostr,Response r); // creates an output stream object
 		const bool operator==(Response r); // determines if two responses have equivalent data
-		const Response operator=(Response r); // assignes the data of the response from the given response
-        friend Response operator=(const Response g);
+		//const Response operator=(Response r); // assignes the data of the response from the given response
+        Response operator=(Response g);
 		virtual ~Response();
 	private:
 		 int numCorrect; // number of matching values
