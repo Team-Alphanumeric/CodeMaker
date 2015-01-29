@@ -35,5 +35,4 @@ protected:
 private:
 	short int base;
 };
-
 #endif /* MASTERMIND_H_ */
